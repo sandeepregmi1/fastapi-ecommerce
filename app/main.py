@@ -114,19 +114,55 @@ def get_product_by_id(id: int):
         "fruit": fruits[id - 1]
     }
 
+# Cart API (query parameter)
+@app.get("/cart")
+def get_cart(id: int = 1):
+    """Get cart item → /cart?id=1"""
 
+    cart_items = [
+        {"id": 1, "name": "Shirt", "price": 500},
+        {"id": 2, "name": "Shoes", "price": 2000},
+        {"id": 3, "name": "T-shirt", "price": 2000},
+    ]
+
+    if id < 1 or id > len(cart_items):
+        return {"error": "Invalid cart item ID"}
+
+    return {"cart_item": cart_items[id - 1]}
+
+
+# Orders API (path parameter)
+@app.get("/orders/{id}")
+def get_orders(id: int):
+    """Get order → /orders/1"""
+
+    order_items = [
+        {"id": 1, "status": "pending", "total": 500},
+        {"id": 2, "status": "completed", "total": 1000},
+        {"id": 3, "status": "cancelled", "total": 1500},
+    ]
+
+    if id < 1 or id > len(order_items):
+        return {"error": "Invalid order ID"}
+
+    return {"order": order_items[id - 1]}
+
+
+# Notes for revision
 """
-✔ Root endpoint → /
-✔ Static routes → /about, /contact
-✔ Path parameter → /products/{id}
-✔ Query parameter → /search?name=shirt
-✔ Product APIs → /product, /product/{id}
+Root → /
+Static routes → /about, /contact
+Path parameter → /products/{id}, /orders/{id}
+Query parameter → /search?name=shirt, /cart?id=1
 
-KEY DIFFERENCE:
-- Path Parameter → Required, part of URL
-- Query Parameter → Optional, after '?'
+Path parameter:
+- required
+- part of URL
 
-IMPORTANT:
-- FastAPI auto converts dict → JSON
-- Type hints (id: int) = validation
+Query parameter:
+- optional
+- after '?'
+
+FastAPI automatically converts dictionary to JSON
+Type hints (id: int) provide validation
 """
